@@ -9,7 +9,10 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "npx prettier --write .",
-    "format:check": "npx prettier --check ."
+    "format:check": "npx prettier --check .",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "repository": {
     "type": "git",
@@ -24,11 +27,14 @@
   },
   "homepage": "https://github.com/dxca283/docker-k8s-project#readme",
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
     "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.45.1",
     "express": "^5.2.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
+    "drizzle-kit": "^0.31.8",
     "eslint": "^9.39.2",
     "globals": "^16.5.0"
   }
