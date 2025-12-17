@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/docker-k8s-project-app
+  IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/docker-k8s-app
 
 jobs:
   build-and-push:
