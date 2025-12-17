@@ -303,3 +303,5 @@
 {"level":"info","message":"User vdhmichale@gmail.com created successfully","service":"docker-k8s-api","timestamp":"2025-12-17T09:54:58.841Z"}
 {"level":"info","message":"User registered successfully: vdhmichale@gmail.com","service":"docker-k8s-api","timestamp":"2025-12-17T09:54:58.847Z"}
 {"level":"info","message":"::ffff:172.19.0.1 - - [17/Dec/2025:09:54:58 +0000] \"POST /api/auth/sign-up HTTP/1.1\" 201 107 \"-\" \"PostmanRuntime/7.39.1\"","service":"docker-k8s-api","timestamp":"2025-12-17T09:54:58.852Z"}
+{"level":"info","message":"Hello World!","service":"docker-k8s-api","timestamp":"2025-12-17T10:01:35.947Z"}
+{"level":"info","message":"::ffff:172.20.0.1 - - [17/Dec/2025:10:01:35 +0000] \"GET / HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\"","service":"docker-k8s-api","timestamp":"2025-12-17T10:01:35.964Z"}
