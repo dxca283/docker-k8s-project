@@ -34,7 +34,6 @@ jobs:
 
           echo "Docker Hub secrets OK"
 
-
       # ======================
       # Setup Docker Buildx
       # ======================
@@ -57,7 +56,9 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.IMAGE_NAME }}
+          images: |
+            ${{ secrets.DOCKER_USERNAME }}/docker-k8s-project-app
+
           tags: |
             type=ref,event=branch
             type=sha,format=short
