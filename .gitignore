@@ -1,2 +1,11 @@
 node_modules
+logs
+
+# Environment files (secrets)
+.env
 .env.*
+!.env.development
+!.env.production
+
+# Neon Local metadata
+.neon_local/

@@ -1,0 +1,19 @@
+services:
+  app:
+    build:
+      context: .
+      target: prod
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.production
+    restart: unless-stopped
+    networks:
+      - app-network
+    volumes:
+      # Only mount logs directory in production
+      - ./logs:/app/logs
+
+networks:
+  app-network:
+    driver: bridge

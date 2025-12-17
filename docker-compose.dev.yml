@@ -1,0 +1,34 @@
+services:
+  neon-local:
+    image: neondatabase/neon_local:latest
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env.development
+    volumes:
+      # Optional: persist Neon branch metadata per git branch
+      - ./.neon_local:/tmp/.neon_local
+      - ./.git/HEAD:/tmp/.git/HEAD:ro
+    networks:
+      - app-network
+
+  app:
+    build:
+      context: .
+      target: dev
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.development
+    depends_on:
+      - neon-local
+    networks:
+      - app-network
+    volumes:
+      # Mount source code for hot-reload in development
+      - ./src:/app/src:ro
+      - ./logs:/app/logs
+
+networks:
+  app-network:
+    driver: bridge
