@@ -1,10 +1,10 @@
-import 'dotenv/config.js';
-import process from 'process';
+import "dotenv/config.js";
+import process from "process";
 
-import { neon, neonConfig } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-http';
+import { neon, neonConfig } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-http";
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === "development") {
   neonConfig.fetchEndpoint = `http://neon-local:5432/sql`;
   neonConfig.useSecureWebSocket = false;
   neonConfig.poolQueryViaFetch = true;

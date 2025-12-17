@@ -21,7 +21,7 @@ export const comparePassword = async (password, hashedPassword) => {
     throw new Error("Password comparison failed");
   }
 };
-export const createUser = async ({ name, email, password, role = 'user' }) => {
+export const createUser = async ({ name, email, password, role = "user" }) => {
   try {
     const existingUser = await db
       .select()
@@ -30,7 +30,7 @@ export const createUser = async ({ name, email, password, role = 'user' }) => {
       .limit(1);
 
     if (existingUser.length > 0)
-      throw new Error('User with this email already exists');
+      throw new Error("User with this email already exists");
 
     const password_hash = await hashPassword(password);
 
@@ -56,13 +56,16 @@ export const authenticateUser = async ({ email, password }) => {
       .limit(1);
 
     if (!existingUser) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
 
-    const isPasswordValid = await comparePassword(password, existingUser.password);
+    const isPasswordValid = await comparePassword(
+      password,
+      existingUser.password,
+    );
 
     if (!isPasswordValid) {
-      throw new Error('Invalid password');
+      throw new Error("Invalid password");
     }
 
     logger.info(`User ${existingUser.email} authenticated successfully`);
@@ -72,4 +75,3 @@ export const authenticateUser = async ({ email, password }) => {
     throw e;
   }
 };
-

@@ -5,12 +5,14 @@ A Node.js/Express application with PostgreSQL database support, dockerized with 
 ## Architecture
 
 ### Development Environment
+
 - Uses **Neon Local** Docker proxy to create ephemeral database branches
 - Each `docker compose up` creates a fresh database branch from your Neon project
 - Branch is automatically deleted when containers stop (configurable)
 - Supports per-git-branch database persistence
 
 ### Production Environment
+
 - Connects directly to **Neon Cloud** database
 - No local proxy needed
 - Environment variables injected at runtime
@@ -55,6 +57,7 @@ docker compose -f docker-compose.dev.yml --env-file .env.development.local up --
 ```
 
 The application will:
+
 - Create a new ephemeral Neon database branch from `main`
 - Connect to it via the Neon Local proxy
 - Be available at `http://localhost:3000`
@@ -120,40 +123,42 @@ docker run -p 3000:3000 --env-file .env.production my-app:prod
 
 ### Development (Neon Local)
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `NEON_API_KEY` | Your Neon API key | ✅ Yes |
-| `NEON_PROJECT_ID` | Your Neon project ID | ✅ Yes |
-| `PARENT_BRANCH_ID` | Branch to create ephemeral branches from | No (default: `main`) |
-| `DATABASE_NAME` | Database name in your Neon project | No (default: `neondb`) |
-| `DELETE_BRANCH` | Delete branch on container stop | No (default: `true`) |
+| Variable           | Description                              | Required               |
+| ------------------ | ---------------------------------------- | ---------------------- |
+| `NEON_API_KEY`     | Your Neon API key                        | ✅ Yes                 |
+| `NEON_PROJECT_ID`  | Your Neon project ID                     | ✅ Yes                 |
+| `PARENT_BRANCH_ID` | Branch to create ephemeral branches from | No (default: `main`)   |
+| `DATABASE_NAME`    | Database name in your Neon project       | No (default: `neondb`) |
+| `DELETE_BRANCH`    | Delete branch on container stop          | No (default: `true`)   |
 
 ### Production (Neon Cloud)
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `DATABASE_URL` | Full Neon Cloud connection string | ✅ Yes |
-| `JWT_SECRET` | Secret for JWT signing | ✅ Yes |
-| `ARCJET_KEY` | Arcjet API key | No |
+| Variable       | Description                       | Required |
+| -------------- | --------------------------------- | -------- |
+| `DATABASE_URL` | Full Neon Cloud connection string | ✅ Yes   |
+| `JWT_SECRET`   | Secret for JWT signing            | ✅ Yes   |
+| `ARCJET_KEY`   | Arcjet API key                    | No       |
 
 ### Common Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `PORT` | Server port | `3000` |
-| `NODE_ENV` | Environment (`development`/`production`) | - |
-| `LOG_LEVEL` | Logging level (`debug`/`info`/`error`) | `info` |
+| Variable    | Description                              | Default |
+| ----------- | ---------------------------------------- | ------- |
+| `PORT`      | Server port                              | `3000`  |
+| `NODE_ENV`  | Environment (`development`/`production`) | -       |
+| `LOG_LEVEL` | Logging level (`debug`/`info`/`error`)   | `info`  |
 
 ## How It Works
 
 ### Neon Local (Development)
 
 The app connects to Neon Local proxy at `neon-local:5432`. The proxy:
+
 1. Creates an ephemeral branch of your Neon database when containers start
 2. Routes all database queries to that branch in Neon Cloud
 3. Deletes the branch when containers stop (unless `DELETE_BRANCH=false`)
 
 In `src/config/database.js`, when `NEON_LOCAL_HOST` is set:
+
 ```javascript
 neonConfig.fetchEndpoint = `http://neon-local:5432/sql`;
 neonConfig.useSecureWebSocket = false;
@@ -177,18 +182,23 @@ Add `.neon_local/` to `.gitignore` (already configured).
 ## Troubleshooting
 
 ### "DATABASE_URL is not set" error
+
 Make sure you're passing the correct env file:
+
 ```bash
 docker compose -f docker-compose.dev.yml --env-file .env.development.local up
 ```
 
 ### Neon Local can't create branches
+
 - Verify your `NEON_API_KEY` has the correct permissions
 - Check that `NEON_PROJECT_ID` matches your project
 - Ensure the `PARENT_BRANCH_ID` branch exists in your Neon project
 
 ### Port 5432 already in use
+
 If you have PostgreSQL running locally:
+
 ```bash
 # Stop local PostgreSQL, or change the port in docker-compose.dev.yml:
 # ports:
@@ -196,6 +206,7 @@ If you have PostgreSQL running locally:
 ```
 
 ### Docker on Mac: Git branch detection not working
+
 Ensure Docker Desktop uses **gRPC FUSE** instead of VirtioFS (Docker Settings → General).
 
 ## Project Structure

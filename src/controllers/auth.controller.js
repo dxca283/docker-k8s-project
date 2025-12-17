@@ -2,9 +2,8 @@ import logger from "../config/logger.js";
 import { createUser, authenticateUser } from "../services/auth.service.js";
 import { formatValidationError } from "../utils/format.js";
 import { signUpSchema, signInSchema } from "../validations/auth.validation.js";
-import {jwttoken} from "../utils/jwt.js";
-import {cookies} from '../utils/cookie.js';
-
+import { jwttoken } from "../utils/jwt.js";
+import { cookies } from "../utils/cookie.js";
 
 export const signUp = async (req, res, next) => {
   try {
@@ -18,12 +17,14 @@ export const signUp = async (req, res, next) => {
     }
 
     const { name, email, password, role } = validationResult.data;
-    const user = await createUser({name, email, password, role});
+    const user = await createUser({ name, email, password, role });
 
-
-    
-    const token = jwttoken.sign({ id: user.id, email: user.email, role: user.role });
-    cookies.set(res, 'token', token);
+    const token = jwttoken.sign({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    });
+    cookies.set(res, "token", token);
 
     logger.info(`User registered successfully: ${email}`);
     res.status(201).json({
@@ -60,8 +61,12 @@ export const signIn = async (req, res, next) => {
     const { email, password } = validationResult.data;
     const user = await authenticateUser({ email, password });
 
-    const token = jwttoken.sign({ id: user.id, email: user.email, role: user.role });
-    cookies.set(res, 'token', token);
+    const token = jwttoken.sign({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    });
+    cookies.set(res, "token", token);
 
     logger.info(`User signed in successfully: ${email}`);
     res.status(200).json({
@@ -86,9 +91,9 @@ export const signIn = async (req, res, next) => {
 
 export const signOut = async (req, res, next) => {
   try {
-    cookies.clear(res, 'token');
+    cookies.clear(res, "token");
 
-    logger.info('User signed out successfully');
+    logger.info("User signed out successfully");
     res.status(200).json({
       message: "User signed out",
     });

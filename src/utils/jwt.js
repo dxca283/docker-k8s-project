@@ -21,5 +21,5 @@ export const jwttoken = {
       logger.error("Error verifying JWT:", error);
       throw new Error("Invalid JWT");
     }
-  }, 
+  },
 };
