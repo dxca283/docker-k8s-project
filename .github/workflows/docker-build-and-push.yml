@@ -2,64 +2,41 @@ name: Docker Build and Push
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/docker-k8s-app
+  DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/docker-k8s-project-app
 
 jobs:
-  build-and-push:
-    name: Build and Push Docker Image
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      # ======================
-      # Checkout source code
-      # ======================
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # ======================
-      # Setup Docker Buildx
-      # ======================
-      - name: Set up Docker Buildx
+      - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # ======================
-      # Login Docker Hub
-      # ======================
-      - name: Log in to Docker Hub
+      - name: Login Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # ======================
-      # Extract image metadata
-      # ======================
-      - name: Extract Docker metadata
+      - name: Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.IMAGE_NAME }}
+          images: ${{ env.DOCKER_IMAGE }}
           tags: |
             type=ref,event=branch
             type=sha,format=short
             type=raw,value=latest,enable={{is_default_branch}}
             type=raw,value=prod-{{date 'YYYYMMDD-HHmmss'}},enable={{is_default_branch}}
-          labels: |
-            org.opencontainers.image.title=Docker K8s API
-            org.opencontainers.image.description=Node.js Express API for Docker & Kubernetes project
-            org.opencontainers.image.source=https://github.com/${{ github.repository }}
-            org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.created={{date 'YYYY-MM-DDTHH:mm:ssZ'}}
 
-      # ======================
-      # Build & Push Image
-      # ======================
-      - name: Build and push Docker image
+      - name: Build & Push
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -71,39 +48,16 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             NODE_ENV=production
-            BUILD_DATE=${{ github.run_started_at }}
             GIT_SHA=${{ github.sha }}
             GIT_REF=${{ github.ref_name }}
 
-      # ======================
-      # GitHub Summary
-      # ======================
-      - name: Publish build summary
-        if: success()
+      - name: Summary
         run: |
-          echo "## 🐳 Docker Image Published" >> $GITHUB_STEP_SUMMARY
+          echo "## 🐳 Docker Image Built" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Image:** \`${{ env.IMAGE_NAME }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Image:** \`${{ env.DOCKER_IMAGE }}\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Tags" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.meta.outputs.tags }}" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Platforms" >> $GITHUB_STEP_SUMMARY
-          echo "- linux/amd64" >> $GITHUB_STEP_SUMMARY
-          echo "- linux/arm64" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Pull Image" >> $GITHUB_STEP_SUMMARY
-          echo '```bash' >> $GITHUB_STEP_SUMMARY
-          echo "docker pull ${{ env.IMAGE_NAME }}:latest" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-
-      # ======================
-      # Failure notice
-      # ======================
-      - name: Build failure notice
-        if: failure()
-        run: |
-          echo "::error::Docker build failed"
-          echo "::notice::Check Dockerfile, secrets, and image name format"
