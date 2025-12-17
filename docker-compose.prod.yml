@@ -11,7 +11,7 @@ services:
     networks:
       - app-network
     volumes:
-      # Only mount logs directory in production
+
       - ./logs:/app/logs
 
 networks:
